@@ -3,7 +3,7 @@ import { IProject } from '@/types';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Calendar, MapPin, Edit3, Image as ImageIcon } from 'lucide-react';
+import { Calendar, MapPin, Edit3, Image as ImageIcon, Clock } from 'lucide-react';
 import Image from 'next/image';
 
 interface ProjectProgressCardProps {
@@ -13,14 +13,53 @@ interface ProjectProgressCardProps {
 
 export const ProjectProgressCard = ({ project, onUpdateProgress }: ProjectProgressCardProps) => {
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('bn-BD', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric'
-    });
+    if (!dateString) return 'তারিখ নেই';
+    
+    try {
+      return new Date(dateString).toLocaleDateString('bn-BD', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric'
+      });
+    } catch {
+      return 'তারিখ নেই';
+    }
   };
 
-  const hasProgress = project.progressUpdate.length > 0 || project.progressUpdateImage.length > 0;
+  const formatDateTime = (dateString: string) => {
+    if (!dateString) return 'তারিখ নেই';
+    
+    try {
+      return new Date(dateString).toLocaleDateString('bn-BD', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+    } catch {
+      return 'তারিখ নেই';
+    }
+  };
+
+  const getLatestUpdateDate = () => {
+    if (!project?.progressUpdateDate?.length) return null;
+    
+    try {
+      const dates = project.progressUpdateDate
+        .filter(date => date)
+        .map(date => new Date(date));
+      
+      if (dates.length === 0) return null;
+      
+      return new Date(Math.max(...dates.map(d => d.getTime())));
+    } catch {
+      return null;
+    }
+  };
+
+  const hasProgress = (project?.progressUpdate?.length > 0) || (project?.progressUpdateImage?.length > 0);
+  const latestUpdateDate = getLatestUpdateDate();
 
   return (
     <Card className="hover:shadow-lg transition-shadow duration-300">
@@ -28,8 +67,8 @@ export const ProjectProgressCard = ({ project, onUpdateProgress }: ProjectProgre
         {/* Project Header */}
         <div className="relative h-40 w-full">
           <Image
-            src={project.image[0]}
-            alt={project.name}
+            src={project?.image?.[0] || '/placeholder-image.jpg'}
+            alt={project?.name || 'Project image'}
             fill
             className="object-cover rounded-t-lg"
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
@@ -37,11 +76,11 @@ export const ProjectProgressCard = ({ project, onUpdateProgress }: ProjectProgre
           <div className="absolute inset-0 bg-black/20 rounded-t-lg" />
           <div className="absolute bottom-3 left-3 right-3 text-white">
             <h3 className="font-semibold text-lg mb-1 line-clamp-1">
-              {project.name}
+              {project?.name || 'নাম নেই'}
             </h3>
             <div className="flex items-center gap-1 text-sm opacity-90">
               <MapPin className="h-3 w-3" />
-              <span>{project.location}</span>
+              <span>{project?.location || 'লোকেশন নেই'}</span>
             </div>
           </div>
           <Button
@@ -58,35 +97,51 @@ export const ProjectProgressCard = ({ project, onUpdateProgress }: ProjectProgre
           {/* Progress Status */}
           <div className="flex items-center justify-between">
             <Badge variant={hasProgress ? "default" : "secondary"}>
-              {hasProgress ? `${project.progressUpdate.length}টি হালনাগাদ` : 'হালনাগাদ নেই'}
+              {hasProgress ? `${project?.progressUpdate?.length || 0}টি হালনাগাদ` : 'হালনাগাদ নেই'}
             </Badge>
             <Badge variant="outline">
-              {project.progressUpdateImage.length}টি ছবি
+              {project?.progressUpdateImage?.length || 0}টি ছবি
             </Badge>
           </div>
+
+          {/* Latest Update Date */}
+          {latestUpdateDate && (
+            <div className="flex items-center gap-2 text-sm text-muted-foreground bg-muted/50 p-2 rounded">
+              <Clock className="h-3 w-3" />
+              <span>সর্বশেষ হালনাগাদ: {formatDateTime(latestUpdateDate.toString())}</span>
+            </div>
+          )}
 
           {/* Recent Progress Updates */}
           {hasProgress ? (
             <div className="space-y-2">
               <h4 className="font-medium text-sm text-foreground">সাম্প্রতিক হালনাগাদ:</h4>
-              <div className="space-y-1">
-                {project.progressUpdate.slice(0, 2).map((update, index) => (
-                  <div key={index} className="flex items-start gap-2 text-sm">
-                    <div className="w-2 h-2 bg-primary rounded-full mt-2 flex-shrink-0" />
-                    <p className="text-muted-foreground line-clamp-2">{update}</p>
+              <div className="space-y-3">
+                {project?.progressUpdate?.slice(0, 2)?.map((update, index) => (
+                  <div key={index} className="space-y-1">
+                    <div className="flex items-start gap-2 text-sm">
+                      <div className="w-2 h-2 bg-primary rounded-full mt-2 flex-shrink-0" />
+                      <p className="text-muted-foreground line-clamp-2">{update}</p>
+                    </div>
+                    {project?.progressUpdateDate?.[index] && (
+                      <div className="flex items-center gap-1 text-xs text-muted-foreground ml-4">
+                        <Calendar className="h-3 w-3" />
+                        <span>{formatDate(project.progressUpdateDate[index])}</span>
+                      </div>
+                    )}
                   </div>
                 ))}
-                {project.progressUpdate.length > 2 && (
+                {(project?.progressUpdate?.length || 0) > 2 && (
                   <p className="text-xs text-muted-foreground">
-                    + আরও {project.progressUpdate.length - 2}টি হালনাগাদ
+                    + আরও {(project?.progressUpdate?.length || 0) - 2}টি হালনাগাদ
                   </p>
                 )}
               </div>
 
               {/* Progress Images Preview */}
-              {project.progressUpdateImage.length > 0 && (
+              {project?.progressUpdateImage?.length > 0 && (
                 <div className="flex gap-2 overflow-x-auto pb-2">
-                  {project.progressUpdateImage.slice(0, 3).map((image, index) => (
+                  {project?.progressUpdateImage?.slice(0, 3)?.map((image, index) => (
                     <div key={index} className="relative h-16 w-16 flex-shrink-0 rounded border overflow-hidden">
                       <Image
                         src={image}
@@ -97,9 +152,9 @@ export const ProjectProgressCard = ({ project, onUpdateProgress }: ProjectProgre
                       />
                     </div>
                   ))}
-                  {project.progressUpdateImage.length > 3 && (
+                  {(project?.progressUpdateImage?.length || 0) > 3 && (
                     <div className="h-16 w-16 flex items-center justify-center bg-muted rounded border text-xs text-muted-foreground">
-                      +{project.progressUpdateImage.length - 3}
+                      +{(project?.progressUpdateImage?.length || 0) - 3}
                     </div>
                   )}
                 </div>
@@ -117,9 +172,9 @@ export const ProjectProgressCard = ({ project, onUpdateProgress }: ProjectProgre
           <div className="flex items-center justify-between text-xs text-muted-foreground pt-2 border-t">
             <div className="flex items-center gap-1">
               <Calendar className="h-3 w-3" />
-              <span>মেয়াদ: {formatDate(project.expireDate)}</span>
+              <span>মেয়াদ: {formatDate(project?.expireDate)}</span>
             </div>
-            <span>সমাপ্তি: {formatDate(project.Duration)}</span>
+            <span>সমাপ্তি: {formatDate(project?.Duration)}</span>
           </div>
         </div>
       </CardContent>

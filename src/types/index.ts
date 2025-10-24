@@ -1,25 +1,36 @@
 export interface IProject {
-    id: number;
-    name: string;
-    description: string;
-    image: string[];
-    totalShare: string;
-    sharePrice: string;
-    profitPerShare: string;
-    expireDate: string;
-    Duration: string;
-    location: string;
-    progressUpdateImage: string[];
-    progressUpdate: string[];
-    createdAt: string;
-    updateAt: string;
-  }
+  id: number;
+  name: string;
+  description: string;
+  image: string[];
+  totalShare: string;
+  sharePrice: string;
+  profitPerShare: string;
+  expireDate: string;
+  Duration: string;
+  location: string;
+  progressUpdateImage: string[];
+  progressUpdate: string[];
+  progressUpdateDate: string[];
+  createdAt: string;
+  updateAt: string;
+  category: string;
+  keywords: string[];
+  estimatedROI?: number;
+  roiCalculation?: string;
+  Investment?: any[];
+  payment?: any[];
+}
 
+export type SortOption = 'createdAt' | 'sharePrice' | 'expireDate' | 'estimatedROI';
+export type SortOrder = 'asc' | 'desc';
+export type DurationFilter = 'SHORT_TERM' | 'MEDIUM_TERM' | 'LONG_TERM' | 'ALL';
 
 
   export interface ProgressUpdateData {
     progressUpdateImage: string[];
     progressUpdate: string[];
+    progressUpdateDate: string[];
   }
   
   export interface ProjectsResponse {
@@ -142,6 +153,7 @@ export interface ProjectProgress {
     name: string;
     progressUpdate: string[];
     progressUpdateImage: string[];
+    progressUpdateDate: string[];
   };
 }
 

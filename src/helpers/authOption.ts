@@ -9,6 +9,7 @@ declare module "next-auth" {
       name?: string | null;
       phone?: string | null;
       role?: string | null;
+      status?:string | null;
     };
   }
   interface User {
@@ -16,6 +17,7 @@ declare module "next-auth" {
     name?: string | null;
     phone?: string | null;
     role?: string | null;
+    status?:string | null;
   }
 }
 
@@ -24,6 +26,7 @@ declare module "next-auth/jwt" {
     id: string;
     name?: string | null;
     phone?: string | null;
+    status?:string | null;
     role?: string | null;
   }
 }
@@ -72,6 +75,7 @@ export const authOptions: NextAuthOptions = {
               name: user.data.name,
               phone: user.data.phone,
               role: user.data.role,
+              status:user.data.status
             };
           } else {
             return null;
@@ -91,6 +95,7 @@ export const authOptions: NextAuthOptions = {
         token.name = user.name;
         token.phone = user.phone;
         token.role = user.role;
+        token.status=user.status
       }
       return token;
     },
@@ -101,6 +106,7 @@ export const authOptions: NextAuthOptions = {
         session.user.name = token.name;
         session.user.phone = token.phone;
         session.user.role = token.role;
+        session.user.status=token.status
       }
       return session;
     },

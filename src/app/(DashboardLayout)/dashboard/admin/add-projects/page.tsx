@@ -17,9 +17,40 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Loader2, Upload, X } from "lucide-react";
+import { Loader2, Upload, X, Plus, Minus } from "lucide-react";
 import Image from "next/image";
 import { useCloudinaryUpload } from "@/hooks/use-cloudinary-upload";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
+// Category enum mapping (English values for backend, Bangla for UI)
+const CATEGORIES = {
+  CROPS: "ফসল চাষ",
+  LIVESTOCK: "পশুপালন",
+  HORTICULTURE: "উদ্যানপালন",
+  FISHERIES: "মৎস্য চাষ",
+  INPUT_SUPPLY: "কৃষি উপকরণ সরবরাহ",
+  AGRO_INDUSTRY: "কৃষি শিল্প",
+  FARM_EQUIPMENT: "কৃষি যন্ত্রপাতি",
+  AGRI_TECH: "কৃষি প্রযুক্তি",
+  IRRIGATION_SYSTEMS: "সেচ ব্যবস্থা",
+  SUSTAINABLE_FARMING: "টেকসই কৃষি",
+  STORAGE_LOGISTICS: "সংরক্ষণ ও পরিবহন",
+  AGRICULTURAL_FINANCE: "কৃষি অর্থায়ন",
+  LAND_ACQUISITION: "জমি অধিগ্রহণ",
+  RENEWABLE_ENERGY: "নবায়নযোগ্য শক্তি",
+  AGRICULTURAL_RESEARCH: "কৃষি গবেষণা",
+  VALUE_CHAIN_INTEGRATION: "মূল্য শৃঙ্খল একীকরণ",
+  FORESTRY: "বনায়ন",
+  PEST_DISEASE_CONTROL: "পোকামাকড় ও রোগ নিয়ন্ত্রণ",
+  WATER_MANAGEMENT: "পানি ব্যবস্থাপনা",
+  SOIL_HEALTH: "মাটির স্বাস্থ্য"
+} as const;
 
 // Zod validation schema
 const projectFormSchema = z.object({
@@ -31,6 +62,8 @@ const projectFormSchema = z.object({
   expireDate: z.string().min(1, "মেয়াদ উত্তীর্ণের তারিখ প্রয়োজন"),
   Duration: z.string().min(1, "প্রকল্পের সময়সীমা প্রয়োজন"),
   location: z.string().min(1, "অবস্থান প্রয়োজন"),
+  category: z.string().min(1, "বিভাগ নির্বাচন করুন"),
+  keywords: z.array(z.string().min(1, "কিওয়ার্ড খালি হতে পারবে না")).min(1, "কমপক্ষে একটি কিওয়ার্ড যোগ করুন"),
 });
 
 type ProjectFormValues = z.infer<typeof projectFormSchema>;
@@ -40,7 +73,7 @@ const AddProject = () => {
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [submitSuccess, setSubmitSuccess] = useState(false);
   
-  const { images, uploading, error, handleFileChange,removeImage,clearImages } = useCloudinaryUpload();
+  const { images, uploading, error, handleFileChange, removeImage, clearImages } = useCloudinaryUpload();
 
   const form = useForm<ProjectFormValues>({
     resolver: zodResolver(projectFormSchema),
@@ -53,8 +86,35 @@ const AddProject = () => {
       expireDate: "",
       Duration: "",
       location: "",
+      category: "",
+      keywords: [""], // Start with one empty keyword field
     },
   });
+
+  // Add new keyword field
+  const addKeyword = () => {
+    const currentKeywords = form.getValues("keywords");
+    form.setValue("keywords", [...currentKeywords, ""]);
+  };
+
+  // Remove keyword field
+  const removeKeyword = (index: number) => {
+    const currentKeywords = form.getValues("keywords");
+    if (currentKeywords.length > 1) {
+      form.setValue(
+        "keywords", 
+        currentKeywords.filter((_, i) => i !== index)
+      );
+    }
+  };
+
+  // Update keyword value
+  const updateKeyword = (index: number, value: string) => {
+    const currentKeywords = form.getValues("keywords");
+    const updatedKeywords = [...currentKeywords];
+    updatedKeywords[index] = value;
+    form.setValue("keywords", updatedKeywords);
+  };
 
   const onSubmit = async (data: ProjectFormValues) => {
     if (images.length === 0) {
@@ -69,6 +129,8 @@ const AddProject = () => {
       const projectData = {
         ...data,
         image: images,
+        // Filter out empty keywords
+        keywords: data.keywords.filter(keyword => keyword.trim() !== ""),
         // Convert date strings to ISO format for backend
         expireDate: new Date(data.expireDate).toISOString(),
         Duration: new Date(data.Duration).toISOString(),
@@ -87,8 +149,7 @@ const AddProject = () => {
       if (result.success) {
         setSubmitSuccess(true);
         form.reset();
-        // Clear images from the upload hook
-        // Note: You might need to add a clear function to your hook
+        clearImages(); // Clear images after successful submission
       } else {
         setSubmitError(result.message || "প্রকল্প তৈরি করতে সমস্যা হয়েছে");
       }
@@ -98,8 +159,6 @@ const AddProject = () => {
       setSubmitting(false);
     }
   };
-
-
 
   return (
     <div className="container mx-auto py-6 space-y-6">
@@ -114,7 +173,7 @@ const AddProject = () => {
         <CardHeader>
           <CardTitle className="text-primary">প্রকল্পের তথ্য</CardTitle>
           <CardDescription>
-            প্রকল্পের সকল প্রয়োজনীয় তথ্য প্রদান  করুন
+            প্রকল্পের সকল প্রয়োজনীয় তথ্য প্রদান করুন
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -223,6 +282,32 @@ const AddProject = () => {
                   )}
                 />
 
+                {/* Category */}
+                <FormField
+                  control={form.control}
+                  name="category"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>বিভাগ *</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="বিভাগ নির্বাচন করুন" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {Object.entries(CATEGORIES).map(([value, label]) => (
+                            <SelectItem key={value} value={value}>
+                              {label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
                 {/* Total Shares */}
                 <FormField
                   control={form.control}
@@ -299,6 +384,51 @@ const AddProject = () => {
                 />
               </div>
 
+              {/* Keywords Section */}
+              <div className="space-y-4">
+                <FormLabel>কিওয়ার্ড *</FormLabel>
+                <div className="space-y-3">
+                  {form.watch("keywords").map((_, index) => (
+                    <div key={index} className="flex gap-2 items-start">
+                      <Input
+                        placeholder={`কিওয়ার্ড ${index + 1}`}
+                        value={form.watch("keywords")[index]}
+                        onChange={(e) => updateKeyword(index, e.target.value)}
+                        className="flex-1"
+                      />
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="icon"
+                        onClick={() => removeKeyword(index)}
+                        disabled={form.watch("keywords").length <= 1}
+                        className="shrink-0"
+                      >
+                        <Minus className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  ))}
+                  
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={addKeyword}
+                    className="flex items-center gap-2"
+                  >
+                    <Plus className="h-4 w-4" />
+                    কিওয়ার্ড যোগ করুন
+                  </Button>
+                </div>
+                {form.formState.errors.keywords && (
+                  <p className="text-sm font-medium text-destructive">
+                    {form.formState.errors.keywords.message}
+                  </p>
+                )}
+                <FormDescription>
+                  প্রকল্পের সাথে সম্পর্কিত কিওয়ার্ড যোগ করুন (যেমন: জৈব কৃষি, হাইড্রোপনিক্স, ডেইরি ফার্ম ইত্যাদি)
+                </FormDescription>
+              </div>
+
               {/* Description */}
               <FormField
                 control={form.control}
@@ -351,7 +481,10 @@ const AddProject = () => {
                 <Button
                   type="button"
                   variant="outline"
-                  onClick={() => form.reset()}
+                  onClick={() => {
+                    form.reset();
+                    clearImages();
+                  }}
                   disabled={submitting}
                 >
                   রিসেট করুন

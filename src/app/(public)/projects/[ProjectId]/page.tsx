@@ -33,7 +33,8 @@ const solidUser =await getServerSession(authOptions)
     return (
 
         <div>
-       <ProjectDetails user={{id:solidUser?.user.id}} project={project?.data}></ProjectDetails>
+       <ProjectDetails user={{id:solidUser?.user.id,
+      status:solidUser?.user.status}} project={project?.data}></ProjectDetails>
         </div>
     );
 };

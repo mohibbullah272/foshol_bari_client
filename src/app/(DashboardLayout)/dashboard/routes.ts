@@ -22,7 +22,6 @@ export async function getDashboardRoutes() {
               { title: "পেমেন্ট পদ্ধতি যোগ করুন", url: "/dashboard/admin/add-payment-method" },
               { title: "পেমেন্ট পদ্ধতি আপডেট করুন", url: "/dashboard/admin/update-payment-method" },
               { title: "ইউজারদের পেমেন্ট গুলু দেখুন", url: "/dashboard/admin/all-payments" },
-              { title: "ইউজার মেনেজ করুন ", url: "/dashboard/admin/manage-user" },
               { title: "KYC ভেরিফিকেশন লিস্ট ", url: "/dashboard/admin/manage-kyc" },
           
             ],

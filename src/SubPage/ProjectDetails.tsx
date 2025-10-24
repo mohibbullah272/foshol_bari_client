@@ -1,10 +1,12 @@
 // components/project/ProjectDetails.tsx
+"use client"
 import React from 'react';
 import Image from 'next/image';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Calendar, MapPin, TrendingUp, DollarSign, Clock } from 'lucide-react';
+import { Calendar, MapPin, TrendingUp, DollarSign, Clock, Tag, PieChart, Calculator } from 'lucide-react';
 import Link from 'next/link';
+import Swal from 'sweetalert2'
 
 interface Project {
   id: number;
@@ -20,6 +22,10 @@ interface Project {
   createdAt: string;
   updateAt: string;
   payment?: Payment[]; // Make payment optional
+  category?: string; // New field
+  keywords?: string[]; // New field
+  estimatedROI?: number; // New field
+  roiCalculation?: string; // New field
 }
 
 interface Payment {
@@ -30,16 +36,17 @@ interface ProjectDetailsProps {
   project: Project;
   user: {
     id: string | undefined;
+    status:string | undefined | null;
   };
 }
 
 const ProjectDetails: React.FC<ProjectDetailsProps> = ({ project, user }) => {
-  // Safe check if user is invested with null checks
+
   const isUserInvested: boolean = project?.payment 
     ? project?.payment?.some(payment => payment?.userId === parseInt(user?.id || "0"))
     : false;
 
-  // Safe share price parsing
+
   const sharePrice = parseFloat(project?.sharePrice?.replace(/[^\d.]/g, '') || '0');
   
   const queryParams = new URLSearchParams({
@@ -48,6 +55,29 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ project, user }) => {
     sharePrice: sharePrice?.toString(),
     totalShare: project?.totalShare || ''
   }).toString();
+
+const handleAlert = ()=>{
+  Swal.fire({
+    title: "দুঃখিত",
+    html:`
+    <p className="text-sm text-gray-700">আপনার অ্যাকাউন্টটি বর্তমানে অনুমোদনের অপেক্ষায় রয়েছে। ড্যাশবোর্ডে গিয়ে KYC ভেরিফিকেশন প্রক্রিয়া সম্পন্ন করুন। ভেরিফিকেশন শেষ হলে আপনি এখানে ফিরে এসে বিনিয়োগ করতে পারবেন। আপনার সহযোগিতার জন্য আন্তরিক ধন্যবাদ।</p>
+    `,
+    showClass: {
+      popup: `
+        animate__animated
+        animate__fadeInUp
+        animate__faster
+      `
+    },
+    hideClass: {
+      popup: `
+        animate__animated
+        animate__fadeOutDown
+        animate__faster
+      `
+    }
+  });
+}
 
   const formatDate = (dateString: string) => {
     try {
@@ -61,9 +91,16 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ project, user }) => {
     }
   };
 
+  // Format ROI percentage
+  const formatROI = (roi?: number) => {
+    if (!roi) return 'গণনা করা হচ্ছে...';
+    const fixedRoi = roi.toFixed(2)
+    return `${fixedRoi}%`;
+  };
+
   // Safe image grid layout
   const renderImageGrid = () => {
-    const images = project.image || [];
+    const images = project?.image || [];
     
     if (images.length === 0) {
       return (
@@ -119,7 +156,7 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ project, user }) => {
             <div className="h-64 sm:h-80">
               <Image
                 src={img}
-                alt={`${project.name || 'প্রকল্প'} - ছবি ${index + 1}`}
+                alt={`${project?.name || 'প্রকল্প'} - ছবি ${index + 1}`}
                 width={400}
                 height={320}
                 className="w-full h-full object-cover"
@@ -157,7 +194,24 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ project, user }) => {
           <Badge variant="outline" className="text-sm">
             শেয়ার: {project?.totalShare || '০'}
           </Badge>
+          {project?.category && (
+            <Badge className="text-sm bg-primary text-primary-foreground">
+              <Tag className="w-4 h-4 mr-1" />
+              {project.category}
+            </Badge>
+          )}
         </div>
+
+        {/* Keywords Section */}
+        {project?.keywords && project.keywords.length > 0 && (
+          <div className="flex flex-wrap gap-2 mt-3">
+            {project.keywords.map((keyword, index) => (
+              <Badge key={index} variant="secondary" className="text-xs">
+                #{keyword}
+              </Badge>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Image Gallery */}
@@ -201,6 +255,14 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ project, user }) => {
                     <span className="text-foreground">প্রতি শেয়ার মূল্য</span>
                     <span className="font-semibold text-primary">৳{project?.sharePrice || '০'}</span>
                   </div>
+                  {project?.estimatedROI && (
+                    <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
+                      <span className="text-foreground">অনুমানিক ROI</span>
+                      <span className="font-semibold text-green-500">
+                        {formatROI(project.estimatedROI)}
+                      </span>
+                    </div>
+                  )}
                 </div>
                 <div className="space-y-4">
                   <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
@@ -213,8 +275,29 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ project, user }) => {
                       {formatDate(project?.Duration)}
                     </span>
                   </div>
+                  {project?.category && (
+                    <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
+                      <span className="text-foreground">বিভাগ</span>
+                      <span className="font-semibold text-primary">{project.category}</span>
+                    </div>
+                  )}
                 </div>
               </div>
+
+              {/* ROI Calculation Section */}
+              {project?.roiCalculation && (
+                <div className="mt-6 p-4 bg-blue-50 dark:bg-blue-950/20 rounded-lg border border-blue-200 dark:border-blue-800">
+                  <div className="flex items-center gap-2 mb-3">
+                    <Calculator className="w-5 h-5 text-blue-600" />
+                    <h3 className="font-semibold text-blue-700 dark:text-blue-300">
+                      ROI গণনা বিবরণ
+                    </h3>
+                  </div>
+                  <p className="text-sm text-blue-800 dark:text-blue-200 leading-relaxed">
+                    {project.roiCalculation}
+                  </p>
+                </div>
+              )}
             </CardContent>
           </Card>
         </div>
@@ -273,13 +356,30 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ project, user }) => {
                   <span className="text-muted-foreground">অনুমানিক লাভ</span>
                   <span className="font-medium text-green-500">৳{project?.profitPerShare || '০'}/শেয়ার</span>
                 </div>
+                {project?.estimatedROI && (
+                  <div className="flex justify-between items-center p-2">
+                    <span className="text-muted-foreground flex items-center gap-1">
+                      <PieChart className="w-4 h-4" />
+                      অনুমানিক ROI
+                    </span>
+                    <span className="font-medium text-green-500">
+                      {formatROI(project.estimatedROI)}
+                    </span>
+                  </div>
+                )}
+                {project?.category && (
+                  <div className="flex justify-between items-center p-2">
+                    <span className="text-muted-foreground">বিভাগ</span>
+                    <span className="font-medium text-primary">{project.category}</span>
+                  </div>
+                )}
               </div>
             </CardContent>
           </Card>
 
           {/* Action Buttons */}
           <div className="space-y-3">
-            {user?.id && !isUserInvested && (
+            {user?.id && !isUserInvested && user?.status === "APPROVED" && (
               <Link href={`/make-payment?${queryParams}`}>
                 <button className="w-full bg-primary text-primary-foreground hover:bg-primary/90 py-3 px-6 rounded-lg font-semibold transition-colors duration-200 shadow-lg">
                   এখনই বিনিয়োগ করুন
@@ -288,13 +388,19 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ project, user }) => {
             )}
             
             {!user?.id && (
-              <Link href="/auth/signin">
+              <Link href="/signin">
                 <button className="w-full bg-destructive text-primary-foreground hover:bg-destructive/90 py-3 px-6 rounded-lg font-semibold transition-colors duration-200 shadow-lg">
                   বিনিয়োগ করার জন্য লগইন করুন
                 </button>
               </Link>
             )}
-            
+            {
+              user?.id && user?.status !== "APPROVED" && (
+                <button onClick={handleAlert} className="w-full bg-primary text-primary-foreground hover:bg-primary/90 py-3 px-6 rounded-lg font-semibold transition-colors duration-200 shadow-lg">
+                  এখনই বিনিয়োগ করুন
+                </button>
+              )
+            }
             {isUserInvested && (
               <button className="w-full bg-gray-500 text-primary-foreground hover:bg-gray-600 py-3 px-6 rounded-lg font-semibold transition-colors duration-200 shadow-lg cursor-not-allowed">
                 আপনি ইতিপূর্বে বিনিয়োগ করেছেন

@@ -189,7 +189,7 @@ export const EditProjectModal = ({ project, open, onClose, onProjectUpdated }: E
                 value={formData.name}
                 onChange={(e) => handleInputChange('name', e.target.value)}
                 placeholder="প্রকল্পের নাম"
-                required
+               
               />
             </div>
 
@@ -200,7 +200,7 @@ export const EditProjectModal = ({ project, open, onClose, onProjectUpdated }: E
                 value={formData.location}
                 onChange={(e) => handleInputChange('location', e.target.value)}
                 placeholder="প্রকল্পের অবস্থান"
-                required
+             
               />
             </div>
 
@@ -211,7 +211,7 @@ export const EditProjectModal = ({ project, open, onClose, onProjectUpdated }: E
                 value={formData.totalShare}
                 onChange={(e) => handleInputChange('totalShare', e.target.value)}
                 placeholder="মোট শেয়ার সংখ্যা"
-                required
+        
               />
             </div>
 
@@ -222,7 +222,7 @@ export const EditProjectModal = ({ project, open, onClose, onProjectUpdated }: E
                 value={formData.sharePrice}
                 onChange={(e) => handleInputChange('sharePrice', e.target.value)}
                 placeholder="প্রতি শেয়ারের মূল্য"
-                required
+                
               />
             </div>
 
@@ -233,7 +233,7 @@ export const EditProjectModal = ({ project, open, onClose, onProjectUpdated }: E
                 value={formData.profitPerShare}
                 onChange={(e) => handleInputChange('profitPerShare', e.target.value)}
                 placeholder="প্রতি শেয়ারে আনুমানিক লাভ"
-                required
+           
               />
             </div>
 
@@ -244,7 +244,7 @@ export const EditProjectModal = ({ project, open, onClose, onProjectUpdated }: E
                 type="datetime-local"
                 value={formData.expireDate}
                 onChange={(e) => handleInputChange('expireDate', e.target.value)}
-                required
+             
               />
             </div>
 
@@ -255,7 +255,7 @@ export const EditProjectModal = ({ project, open, onClose, onProjectUpdated }: E
                 type="datetime-local"
                 value={formData.Duration}
                 onChange={(e) => handleInputChange('Duration', e.target.value)}
-                required
+             
               />
             </div>
           </div>
@@ -268,7 +268,7 @@ export const EditProjectModal = ({ project, open, onClose, onProjectUpdated }: E
               onChange={(e) => handleInputChange('description', e.target.value)}
               placeholder="প্রকল্পের বিস্তারিত বর্ণনা"
               className="min-h-[120px]"
-              required
+           
             />
           </div>
 

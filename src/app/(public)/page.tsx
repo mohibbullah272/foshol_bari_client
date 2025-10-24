@@ -10,8 +10,8 @@ const HomePage = () => {
     return (
         <div>
         <Hero></Hero>
-        <Feature></Feature>
         <RecentProject></RecentProject>
+        <Feature></Feature>
         <HowItWork></HowItWork>
         <Testimonial></Testimonial>
         <Faq></Faq>

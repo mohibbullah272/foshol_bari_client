@@ -1,4 +1,3 @@
-// src/components/ui/AppSidebar.tsx
 import * as React from "react"
 import Link from "next/link"
 import Logo from "./Logo"
@@ -10,12 +9,12 @@ import {
   SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
-  SidebarMenuButton,
   SidebarMenuItem,
   SidebarRail,
 } from "@/components/ui/sidebar"
 import { getDashboardRoutes } from "@/app/(DashboardLayout)/dashboard/routes"
-
+import { SidebarMenuLink } from "./ui/sidebarMenuLink"
+ // Import the client component
 
 export async function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const data = await getDashboardRoutes()
@@ -38,9 +37,9 @@ export async function AppSidebar({ ...props }: React.ComponentProps<typeof Sideb
               <SidebarMenu>
                 {section.items.map((item) => (
                   <SidebarMenuItem key={item.title}>
-                    <SidebarMenuButton asChild>
-                      <Link href={item.url}>{item.title}</Link>
-                    </SidebarMenuButton>
+                    <SidebarMenuLink href={item.url}>
+                      {item.title}
+                    </SidebarMenuLink>
                   </SidebarMenuItem>
                 ))}
               </SidebarMenu>

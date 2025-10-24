@@ -1,5 +1,5 @@
 // components/projects/progress-update-modal.tsx
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { IProject, ProgressUpdateData } from '@/types';
 import { projectApi } from '@/lib/api/project-api';
 import { useCloudinaryUpload } from '@/hooks/use-cloudinary-upload';
@@ -15,7 +15,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
-import { Loader2, Upload, X, Plus, Minus } from 'lucide-react';
+import { Loader2, Upload, X, Plus, Minus, Calendar } from 'lucide-react';
 import Image from 'next/image';
 
 interface ProgressUpdateModalProps {
@@ -33,7 +33,7 @@ export const ProgressUpdateModal = ({
 }: ProgressUpdateModalProps) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [updates, setUpdates] = useState<string[]>(['']);
+  const [updates, setUpdates] = useState<{ text: string; date: string }[]>([{ text: '', date: '' }]);
   
   const { 
     images, 
@@ -45,18 +45,49 @@ export const ProgressUpdateModal = ({
   } = useCloudinaryUpload();
 
   // Initialize with existing progress data
-  useState(() => {
-    if (project) {
-      setUpdates(project.progressUpdate.length > 0 ? [...project.progressUpdate] : ['']);
+  useEffect(() => {
+    if (project && open) {
+      const existingUpdates = project?.progressUpdate?.map((text, index) => ({
+        text,
+        date: project?.progressUpdateDate?.[index] ? 
+              new Date(project.progressUpdateDate[index]).toISOString().split('T')[0] : 
+              new Date().toISOString().split('T')[0]
+      })) || [];
+      
+      setUpdates(existingUpdates.length > 0 ? existingUpdates : [{ text: '', date: new Date().toISOString().split('T')[0] }]);
     }
-  });
+  }, [project, open]);
+
+  // Convert date string to full ISO DateTime
+  const convertToISODateTime = (dateString: string): string => {
+    if (!dateString) return new Date().toISOString();
+    
+    try {
+      // Add time part to make it a full DateTime
+      const date = new Date(dateString);
+      // If it's already a full ISO string, return as is
+      if (!isNaN(date.getTime())) {
+        return date.toISOString();
+      }
+      
+      // If it's just a date string (YYYY-MM-DD), add time
+      const dateOnlyRegex = /^\d{4}-\d{2}-\d{2}$/;
+      if (dateOnlyRegex.test(dateString)) {
+        return new Date(dateString + 'T00:00:00.000Z').toISOString();
+      }
+      
+      return new Date().toISOString();
+    } catch {
+      return new Date().toISOString();
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!project) return;
 
     // Filter out empty updates
-    const filteredUpdates = updates.filter(update => update.trim() !== '');
+    const filteredUpdates = updates.filter(update => update.text?.trim() !== '');
     
     if (filteredUpdates.length === 0 && images.length === 0) {
       setError('কমপক্ষে একটি অগ্রগতি হালনাগাদ বা ছবি যোগ করুন');
@@ -69,45 +100,65 @@ export const ProgressUpdateModal = ({
     try {
       const updateData: ProgressUpdateData = {
         progressUpdateImage: [
-          ...project.progressUpdateImage,
+          ...(project?.progressUpdateImage || []),
           ...images
         ],
         progressUpdate: [
-          ...project.progressUpdate,
-          ...filteredUpdates
+          ...(project?.progressUpdate || []),
+          ...filteredUpdates.map(update => update.text)
+        ],
+        progressUpdateDate: [
+          ...(project?.progressUpdateDate || []),
+          ...filteredUpdates.map(update => convertToISODateTime(update.date))
         ]
       };
 
-      const result = await projectApi.updateProjectProgress(project.id, updateData);
+      console.log('Sending update data:', updateData); // For debugging
 
-      if (result.success) {
+      const result = await projectApi.updateProjectProgress(project?.id, updateData);
+
+      if (result?.success) {
         onProgressUpdated();
         onClose();
         clearImages();
-        setUpdates(['']);
+        setUpdates([{ text: '', date: new Date().toISOString().split('T')[0] }]);
       } else {
-        setError(result.message);
+        setError(result?.message || 'আপডেট করতে সমস্যা হয়েছে');
       }
     } catch (err: any) {
-      setError(err.message || 'আপডেট করতে সমস্যা হয়েছে');
+      setError(err?.message || 'আপডেট করতে সমস্যা হয়েছে');
     } finally {
       setLoading(false);
     }
   };
 
-  const handleUpdateChange = (index: number, value: string) => {
+  const handleUpdateChange = (index: number, field: 'text' | 'date', value: string) => {
     const newUpdates = [...updates];
-    newUpdates[index] = value;
+    newUpdates[index] = {
+      ...newUpdates[index],
+      [field]: value
+    };
     setUpdates(newUpdates);
   };
 
   const addUpdateField = () => {
-    setUpdates(prev => [...prev, '']);
+    setUpdates(prev => [...prev, { text: '', date: new Date().toISOString().split('T')[0] }]);
   };
 
   const removeUpdateField = (index: number) => {
     if (updates.length > 1) {
       setUpdates(prev => prev.filter((_, i) => i !== index));
+    }
+  };
+
+  const formatDateForInput = (dateString: string) => {
+    if (!dateString) return new Date().toISOString().split('T')[0];
+    
+    try {
+      const date = new Date(dateString);
+      return date.toISOString().split('T')[0];
+    } catch {
+      return new Date().toISOString().split('T')[0];
     }
   };
 
@@ -119,17 +170,17 @@ export const ProgressUpdateModal = ({
         <DialogHeader>
           <DialogTitle className="text-primary">অগ্রগতি হালনাগাদ করুন</DialogTitle>
           <DialogDescription>
-            {project.name} - প্রকল্পের অগ্রগতি সম্পর্কিত তথ্য যোগ করুন
+            {project?.name} - প্রকল্পের অগ্রগতি সম্পর্কিত তথ্য যোগ করুন
           </DialogDescription>
         </DialogHeader>
 
         {/* Project Summary */}
         <div className="bg-muted/50 rounded-lg p-4 space-y-2">
-          <h4 className="font-semibold text-foreground">{project.name}</h4>
+          <h4 className="font-semibold text-foreground">{project?.name}</h4>
           <div className="flex flex-wrap gap-2 text-sm text-muted-foreground">
-            <Badge variant="secondary">{project.location}</Badge>
-            <span>মোট শেয়ার: {project.totalShare}</span>
-            <span>শেয়ার মূল্য: ৳{project.sharePrice}</span>
+            <Badge variant="secondary">{project?.location}</Badge>
+            <span>মোট শেয়ার: {project?.totalShare}</span>
+            <span>শেয়ার মূল্য: ৳{project?.sharePrice}</span>
           </div>
         </div>
 
@@ -139,11 +190,11 @@ export const ProgressUpdateModal = ({
             <Label>অগ্রগতির ছবি যোগ করুন</Label>
             
             {/* Current Progress Images */}
-            {project.progressUpdateImage.length > 0 && (
+            {project?.progressUpdateImage?.length > 0 && (
               <div>
                 <p className="text-sm text-muted-foreground mb-2">বর্তমান অগ্রগতির ছবি:</p>
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                  {project.progressUpdateImage.map((img, index) => (
+                  {project?.progressUpdateImage?.map((img, index) => (
                     <div key={index} className="relative aspect-square rounded-lg overflow-hidden border">
                       <Image
                         src={img}
@@ -182,11 +233,11 @@ export const ProgressUpdateModal = ({
             </div>
 
             {/* New Images Preview */}
-            {images.length > 0 && (
+            {images?.length > 0 && (
               <div>
                 <p className="text-sm text-muted-foreground mb-2">নতুন ছবি:</p>
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                  {images.map((imageUrl, index) => (
+                  {images?.map((imageUrl, index) => (
                     <div key={index} className="relative group">
                       <div className="aspect-square relative rounded-lg overflow-hidden border">
                         <Image
@@ -237,25 +288,43 @@ export const ProgressUpdateModal = ({
             </div>
 
             <div className="space-y-3">
-              {updates.map((update, index) => (
+              {updates?.map((update, index) => (
                 <div key={index} className="flex gap-2">
-                  <Textarea
-                    value={update}
-                    onChange={(e) => handleUpdateChange(index, e.target.value)}
-                    placeholder="অগ্রগতি সম্পর্কিত বিস্তারিত লিখুন..."
-                    className="min-h-[80px] flex-1"
-                  />
-                  {updates.length > 1 && (
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="icon"
-                      onClick={() => removeUpdateField(index)}
-                      className="flex-shrink-0 h-10 w-10"
-                    >
-                      <Minus className="h-4 w-4" />
-                    </Button>
-                  )}
+                  <div className="flex-1 space-y-2">
+                    <div className="flex gap-2">
+                      <div className="flex-1">
+                        <Textarea
+                          value={update?.text}
+                          onChange={(e) => handleUpdateChange(index, 'text', e.target.value)}
+                          placeholder="অগ্রগতি সম্পর্কিত বিস্তারিত লিখুন..."
+                          className="min-h-[80px]"
+                        />
+                      </div>
+                      {updates?.length > 1 && (
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="icon"
+                          onClick={() => removeUpdateField(index)}
+                          className="flex-shrink-0 h-10 w-10"
+                        >
+                          <Minus className="h-4 w-4" />
+                        </Button>
+                      )}
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Calendar className="h-4 w-4 text-muted-foreground" />
+                      <Input
+                        type="date"
+                        value={formatDateForInput(update?.date)}
+                        onChange={(e) => handleUpdateChange(index, 'date', e.target.value)}
+                        className="w-40"
+                      />
+                      <span className="text-sm text-muted-foreground">
+                        হালনাগাদের তারিখ
+                      </span>
+                    </div>
+                  </div>
                 </div>
               ))}
             </div>

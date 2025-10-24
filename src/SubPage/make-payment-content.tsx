@@ -15,6 +15,7 @@ import Link from 'next/link';
 import PaymentDetails from '@/SubPage/payment-details';
 import PaymentForm from '@/SubPage/payment-form';
 import PaymentMethodCard from '@/SubPage/payment-method-card';
+import { toast } from 'sonner';
 
 
 const MakePaymentContent = () => {
@@ -102,7 +103,8 @@ const MakePaymentContent = () => {
 
       if (result.success) {
         // Redirect to success page or investments page
-        router.push('/investments?payment=success');
+        toast.success("payment successful")
+        router.push('/projects');
       } else {
         setError(result.message || 'পেমেন্ট সাবমিট করতে সমস্যা হয়েছে');
       }
