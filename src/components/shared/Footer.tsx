@@ -1,7 +1,6 @@
 import React from "react";
-import { FaFacebook, FaInstagram, FaLinkedin, FaTwitter } from "react-icons/fa";
 import Logo from "../Logo";
-import { useSession } from "next-auth/react";
+
 
 interface Footer7Props {
   logo?: {
@@ -29,53 +28,37 @@ interface Footer7Props {
 
 const defaultSections = [
   {
-    title: "Product",
+    title: "Quick Links",
     links: [
-      { name: "Overview", href: "#" },
-      { name: "Pricing", href: "#" },
-      { name: "Marketplace", href: "#" },
-      { name: "Features", href: "#" },
+      { name: "Home", href: "/" },
+      { name: "About", href: "/about" },
+      { name: "Projects", href: "/projects" },
+      { name: "Contact", href: "/contact" },
+     
     ],
   },
+
   {
-    title: "Company",
+    title: "Contact",
     links: [
-      { name: "About", href: "#" },
-      { name: "Team", href: "#" },
-      { name: "Blog", href: "#" },
-      { name: "Careers", href: "#" },
-    ],
-  },
-  {
-    title: "Resources",
-    links: [
-      { name: "Help", href: "#" },
-      { name: "Sales", href: "#" },
-      { name: "Advertise", href: "#" },
-      { name: "Privacy", href: "#" },
+      { name: "25/7/1 Zigatola  Dhaka Bangladesh", href: "/" },
+      { name: "০১৯১২-৯৫৩২১৮", href: "/" },
+      { name: "fosholbariagro@gmail.com", href: "/" },
     ],
   },
 ];
 
-const defaultSocialLinks = [
-  { icon: <FaInstagram className="size-5" />, href: "#", label: "Instagram" },
-  { icon: <FaFacebook className="size-5" />, href: "#", label: "Facebook" },
-  { icon: <FaTwitter className="size-5" />, href: "#", label: "Twitter" },
-  { icon: <FaLinkedin className="size-5" />, href: "#", label: "LinkedIn" },
-];
 
-const defaultLegalLinks = [
-  { name: "Terms and Conditions", href: "#" },
-  { name: "Privacy Policy", href: "#" },
-];
+
+
 
 const Footer = async({
 
   sections = defaultSections,
   description = "আপনার বিনিয়োগে গড়ে উঠুক আগামী দিনের ফসল",
-  socialLinks = defaultSocialLinks,
+
   copyright = "© 2025 ফসল বাড়ি All rights reserved.",
-  legalLinks = defaultLegalLinks,
+ 
 }: Footer7Props) => {
 
   return (
@@ -91,15 +74,7 @@ const Footer = async({
             <p className="text-muted-foreground max-w-[70%] text-sm">
               {description}
             </p>
-            <ul className="text-muted-foreground flex items-center space-x-6">
-              {socialLinks.map((social, idx) => (
-                <li key={idx} className="hover:text-primary font-medium">
-                  <a href={social.href} aria-label={social.label}>
-                    {social.icon}
-                  </a>
-                </li>
-              ))}
-            </ul>
+ 
           </div>
           <div className="grid w-full gap-6 md:grid-cols-3 lg:gap-20">
             {sections.map((section, sectionIdx) => (
@@ -119,15 +94,9 @@ const Footer = async({
             ))}
           </div>
         </div>
-        <div className="text-muted-foreground mt-8 flex flex-col justify-between gap-4 border-t py-8 text-xs font-medium md:flex-row md:items-center md:text-left">
-          <p className="order-2 lg:order-1">{copyright}</p>
-          <ul className="order-1 flex flex-col gap-2 md:order-2 md:flex-row">
-            {legalLinks.map((link, idx) => (
-              <li key={idx} className="hover:text-primary">
-                <a href={link.href}> {link.name}</a>
-              </li>
-            ))}
-          </ul>
+        <div className="text-muted-foreground mt-8  flex flex-col justify-between items-center text-center  gap-4 border-t py-8 text-xs font-medium md:flex-row md:items-center md:justify-center md:text-left">
+          <p className="order-2 lg:order-1 ">{copyright}</p>
+   
         </div>
       </div>
     </section>

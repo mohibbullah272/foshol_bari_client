@@ -104,8 +104,8 @@ const ProjectComponent = () => {
 
       {loading && (
         <div className="flex flex-col justify-center items-center min-h-64">
-          <Loader className="animate-spin text-5xl text-green-600" />
-          <p className="mt-4 text-green-700">প্রকল্পগুলো লোড হচ্ছে...</p>
+          <Loader className="animate-spin text-5xl 0" />
+          <p className="mt-4 ">প্রকল্পগুলো লোড হচ্ছে...</p>
         </div>
       )}
 
@@ -123,10 +123,10 @@ const ProjectComponent = () => {
             </p>
           </div>
 
-          {projects.length === 0 ? (
+          {projects.length === 0 && !loading ? (
             <div className="text-center py-12">
-              <p className="text-green-600 text-lg">কোনো প্রকল্প পাওয়া যায়নি</p>
-              <p className="text-green-500">ফিল্টার পরিবর্তন করে আবার চেষ্টা করুন</p>
+              <p className=" text-lg">কোনো প্রকল্প পাওয়া যায়নি</p>
+              <p >ফিল্টার পরিবর্তন করে আবার চেষ্টা করুন</p>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

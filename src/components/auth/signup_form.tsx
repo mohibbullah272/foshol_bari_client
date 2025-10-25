@@ -16,7 +16,7 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { Eye, EyeOff } from "lucide-react"
+import { Eye, EyeOff, Loader } from "lucide-react"
 import { useState } from "react"
 import Link from "next/link"
 import { toast } from "sonner"
@@ -61,6 +61,7 @@ export function SignupForm({
   ...props
 }: React.ComponentProps<"div">) {
   const [showPassword, setShowPassword] = useState(false)
+  const [loading,setLoading]=useState(false)
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -74,6 +75,7 @@ export function SignupForm({
  async function onSubmit(values: z.infer<typeof formSchema>) {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
+    setLoading(true)
 try {
    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/user/createAccount`,{
     method:"POST",
@@ -85,6 +87,7 @@ try {
 
 if(res.ok){
     toast.success('অ্যাকাউন্ট তৈরি হয়েছে, আপনার অ্যাকাউন্ট অ্যাক্সেস করতে আবার লগইন করুন।')
+   setLoading(false)
     signIn("credentials",{
         callbackUrl:"/signin",
         ...values
@@ -215,7 +218,9 @@ if(res.ok){
                   type="submit" 
                   className="w-full bg-primary text-primary-foreground hover:bg-primary/90 py-2.5 text-base font-medium"
                 >
-                  রেজিস্ট্রেশন সম্পন্ন করুন
+               {
+                loading? <Loader className="animate-spin"></Loader>:<span>রেজিস্ট্রেশন সম্পন্ন করুন</span>
+               }
                 </Button>
               </form>
             </Form>

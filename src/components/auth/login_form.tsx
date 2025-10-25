@@ -16,7 +16,7 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { Eye, EyeOff } from "lucide-react"
+import { Eye, EyeOff, Loader } from "lucide-react"
 import { useState } from "react"
 import Link from "next/link"
 import { signIn } from "next-auth/react"
@@ -46,7 +46,7 @@ export function LoginForm({
   ...props
 }: React.ComponentProps<"div">) {
   const [showPassword, setShowPassword] = useState(false)
-
+  const [loading,setLoading]=useState(false)
   const form = useForm<z.infer<typeof loginFormSchema>>({
     resolver: zodResolver(loginFormSchema),
     defaultValues: {
@@ -56,17 +56,24 @@ export function LoginForm({
   })
 
   async function onSubmit(values: z.infer<typeof loginFormSchema>) {
-    const res = await signIn("credentials", {
-      redirect: false, // important!
-      ...values,
-    })
-
-    if (res?.ok ===false) {
-      toast.error("আপনি ভুল পাসওয়ার্ড অথবা মোবাইল নম্বর লিখেছেন")
-    } else {
-      toast.success("লগইন সফল হয়েছে!")
-      window.location.href = "/"
+    setLoading(true)
+    try {
+      const res = await signIn("credentials", {
+        redirect: false, // important!
+        ...values,
+      })
+  
+      if (res?.ok ===false) {
+        toast.error("আপনি ভুল পাসওয়ার্ড অথবা মোবাইল নম্বর লিখেছেন")
+      } else {
+        setLoading(false)
+        toast.success("লগইন সফল হয়েছে!")
+        window.location.href = "/"
+      }
+    } catch (error) {
+      
     }
+
   }
 
   return (
@@ -164,7 +171,9 @@ export function LoginForm({
                   type="submit" 
                   className="w-full bg-primary text-primary-foreground hover:bg-primary/90 py-2.5 text-base font-medium"
                 >
-                  লগইন করুন
+           {
+            loading ? <Loader className="animate-spin"></Loader>:  <span>লগইন করুন</span>
+           }
                 </Button>
               </form>
             </Form>

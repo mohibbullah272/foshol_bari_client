@@ -272,8 +272,8 @@ export const InvestmentDetailsModal = ({ investmentId, open, onClose }: Investme
                     <h4 className="font-semibold text-foreground mb-4">আর্থিক তথ্য</h4>
                     <div className="grid grid-cols-2 gap-4 text-sm">
                       <div className="text-center p-3 bg-muted rounded-lg">
-                        <div className="font-bold text-foreground text-lg">{details.project.totalShare}</div>
-                        <div className="text-muted-foreground">মোট শেয়ার</div>
+                        <div className="font-bold text-foreground text-lg">{ parseInt(details.project.estimatedROI).toFixed()}%</div>
+                        <div className="text-muted-foreground">গড় লাভ</div>
                       </div>
                       <div className="text-center p-3 bg-muted rounded-lg">
                         <div className="font-bold text-foreground text-lg">৳{details.project.sharePrice}</div>

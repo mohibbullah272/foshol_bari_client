@@ -89,33 +89,27 @@ const ContactInfoCards: React.FC = () => {
     {
       icon: <Phone className="w-8 h-8" />,
       title: "ফোন নম্বর",
-      details: ["01১৭১২-৩৪৫৬৭৮", "+0১৮১২-৩৪৫৬৭৮"],
+      details: ["০১৯১২-৯৫৩২১৮"],
       description: "সকাল ৯টা থেকে রাত ৯টা পর্যন্ত"
     },
     {
       icon: <Mail className="w-8 h-8" />,
       title: "ইমেইল",
-      details: ["eg@gamail.com", "eg@gamil.com2"],
+      details: ["fosholbariagro@gmail.com"],
       description: "২৪ ঘণ্টার মধ্যে উত্তর দেওয়া হবে"
     },
     {
       icon: <MapPin className="w-8 h-8" />,
       title: "ঠিকানা",
-      details: ["Kafrul Dhaka"],
+      details: ["২৫/৭/১ জিগাতলা ঢাকা"],
       description: "বাংলাদেশ"
-    },
-    {
-      icon: <Clock className="w-8 h-8" />,
-      title: "কর্মঘণ্টা",
-      details: ["শনিবার - বৃহস্পতিবার", "সকাল ৯:০০ - রাত ৬:০০"],
-      description: "শুক্রবার ছুটি"
     }
   ];
 
   return (
     <section className="py-12 md:py-16 bg-background">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
           {contactInfo.map((info, index) => (
             <div
               key={index}
@@ -126,11 +120,11 @@ const ContactInfoCards: React.FC = () => {
               <div className="text-primary mb-4 inline-block group-hover:scale-110 transition-transform duration-300">
                 {info.icon}
               </div>
-              <h3 className="text-xl md:text-2xl font-semibold text-card-foreground mb-3">
+              <h3 className="text-xl md:text-2xl  font-semibold text-card-foreground mb-3">
                 {info.title}
               </h3>
               {info.details.map((detail, idx) => (
-                <p key={idx} className="text-foreground font-medium mb-1">
+                <p key={idx} className="text-foreground text-wrap font-medium mb-1">
                   {detail}
                 </p>
               ))}
@@ -308,65 +302,7 @@ const ContactForm: React.FC = () => {
 };
 
 
-// Social Media Section Component
-const SocialMediaSection: React.FC = () => {
-  const socialLinks: SocialLink[] = [
-    {
-      icon: <Facebook className="w-8 h-8" />,
-      name: "ফেসবুক",
-      handle: "@fosholbari",
-      color: "hover:bg-blue-500"
-    },
-    {
-      icon: <Instagram className="w-8 h-8" />,
-      name: "ইনস্টাগ্রাম",
-      handle: "@fosholbari",
-      color: "hover:bg-pink-500"
-    },
-    {
-      icon: <MessageSquare className="w-8 h-8" />,
-      name: "হোয়াটসঅ্যাপ",
-      handle: "০১৭১২-৩৪৫৬৭৮",
-      color: "hover:bg-green-500"
-    }
-  ];
 
-  return (
-    <section className="py-12 md:py-16 bg-muted/50">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-8 md:mb-12" data-aos="fade-up">
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-4">
-            সামাজিক মাধ্যমে যুক্ত হন
-          </h2>
-          <p className="text-muted-foreground text-base md:text-lg">
-            আমাদের সাথে সংযুক্ত থাকুন এবং সর্বশেষ আপডেট পান।
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 max-w-4xl mx-auto">
-          {socialLinks.map((social, index) => (
-            <div
-              key={index}
-              data-aos="flip-up"
-              data-aos-delay={index * 100}
-              className={`bg-card rounded-lg p-6 md:p-8 shadow-lg transition-all duration-300 border border-border text-center group cursor-pointer ${social.color} hover:text-white`}
-            >
-              <div className="inline-block mb-4 group-hover:scale-110 transition-transform duration-300">
-                {social.icon}
-              </div>
-              <h3 className="text-xl md:text-2xl font-semibold mb-2">
-                {social.name}
-              </h3>
-              <p className="text-sm md:text-base opacity-90">
-                {social.handle}
-              </p>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-};
 
 // Main Contact Page Component
 export default function ContactComponent() {
@@ -383,7 +319,7 @@ export default function ContactComponent() {
       <ContactHero />
       <ContactInfoCards />
       <ContactForm />
-      <SocialMediaSection />
+   
    
     </div>
   );

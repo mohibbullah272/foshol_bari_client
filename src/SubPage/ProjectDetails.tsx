@@ -94,7 +94,7 @@ const handleAlert = ()=>{
   // Format ROI percentage
   const formatROI = (roi?: number) => {
     if (!roi) return 'গণনা করা হচ্ছে...';
-    const fixedRoi = roi.toFixed(2)
+    const fixedRoi = roi.toFixed()
     return `${fixedRoi}%`;
   };
 
@@ -258,7 +258,7 @@ const handleAlert = ()=>{
                   {project?.estimatedROI && (
                     <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
                       <span className="text-foreground">অনুমানিক ROI</span>
-                      <span className="font-semibold text-green-500">
+                      <span className="font-semibold text-primary">
                         {formatROI(project.estimatedROI)}
                       </span>
                     </div>
@@ -267,7 +267,7 @@ const handleAlert = ()=>{
                 <div className="space-y-4">
                   <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
                     <span className="text-foreground">প্রতি শেয়ার লাভ</span>
-                    <span className="font-semibold text-green-500">৳{project?.profitPerShare || '০'}</span>
+                    <span className="font-semibold text-primary">৳{project?.profitPerShare || '০'}</span>
                   </div>
                   <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
                     <span className="text-foreground">মেয়াদকাল</span>
@@ -354,7 +354,7 @@ const handleAlert = ()=>{
                 </div>
                 <div className="flex justify-between items-center p-2">
                   <span className="text-muted-foreground">অনুমানিক লাভ</span>
-                  <span className="font-medium text-green-500">৳{project?.profitPerShare || '০'}/শেয়ার</span>
+                  <span className="font-medium text-primary">৳{project?.profitPerShare || '০'}/শেয়ার</span>
                 </div>
                 {project?.estimatedROI && (
                   <div className="flex justify-between items-center p-2">
@@ -362,7 +362,7 @@ const handleAlert = ()=>{
                       <PieChart className="w-4 h-4" />
                       অনুমানিক ROI
                     </span>
-                    <span className="font-medium text-green-500">
+                    <span className="font-medium text-primary">
                       {formatROI(project.estimatedROI)}
                     </span>
                   </div>

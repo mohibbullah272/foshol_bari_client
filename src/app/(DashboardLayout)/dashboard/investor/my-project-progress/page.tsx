@@ -6,7 +6,7 @@ import { ProjectProgressResponse } from '@/types';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { TrendingUp, Calendar, Image as ImageIcon, RefreshCw, ArrowLeft, Clock, FileText } from 'lucide-react';
+import { TrendingUp, Image as ImageIcon, RefreshCw, ArrowLeft, Clock, FileText } from 'lucide-react';
 import Link from 'next/link';
 import { ProgressTimeline } from '@/components/project/project-progress-timeline';
 
@@ -34,6 +34,7 @@ const MyProjectProgress = async () => {
   }
 
   const projects = progressData.data;
+
 
   // Calculate statistics with new fields
   const stats = {
