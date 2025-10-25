@@ -3,7 +3,12 @@ import { IProject } from '../../types/index';
 
 
 const RecentProject = async() => {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/project/all?limit=3`)
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/project/all?limit=3`,{
+        cache:"no-cache",
+        next:{
+            revalidate:360
+        }
+    })
     const projects= await res.json()
     return (
         <div className="max-w-7xl mx-auto my-20">
