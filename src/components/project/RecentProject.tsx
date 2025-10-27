@@ -10,6 +10,7 @@ const RecentProject = async() => {
         }
     })
     const projects= await res.json()
+   
     return (
         <div className="max-w-7xl mx-auto my-20">
             <h3 className="text-4xl text-center my-10 font-bold">চলমান প্রকল্প</h3>
