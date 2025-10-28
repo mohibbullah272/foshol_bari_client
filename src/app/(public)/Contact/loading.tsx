@@ -1,7 +1,8 @@
 import Image from "next/image";
-import loadingGif from '../../../asset/loader.gif'
+import loadingGif from '../../../../asset/loader.gif'
 
 const loading = () => {
+
     return (
         <div className='flex min-h-dvh flex-col justify-center items-center'>
         <Image
@@ -12,6 +13,7 @@ const loading = () => {
         unoptimized={true}
         priority={false}
         />
+    
     </div>
     );
 };

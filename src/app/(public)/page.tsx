@@ -15,6 +15,7 @@ const HomePage = () => {
         <HowItWork></HowItWork>
         <Testimonial></Testimonial>
         <Faq></Faq>
+        
         </div>
     );
 };
