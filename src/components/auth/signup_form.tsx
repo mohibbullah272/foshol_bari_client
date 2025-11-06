@@ -87,7 +87,7 @@ try {
 
 if(res.ok){
     toast.success('অ্যাকাউন্ট তৈরি হয়েছে, আপনার অ্যাকাউন্ট অ্যাক্সেস করতে আবার লগইন করুন।')
-   setLoading(false)
+
     signIn("credentials",{
         callbackUrl:"/signin",
         ...values
@@ -95,6 +95,8 @@ if(res.ok){
 }
 } catch (error) {
     console.log(error)
+}finally{
+  setLoading(false)
 }
 
 

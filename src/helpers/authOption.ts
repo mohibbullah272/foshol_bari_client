@@ -1,6 +1,7 @@
 import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { NextAuthOptions } from "next-auth";
+import { toast } from "sonner";
 
 declare module "next-auth" {
   interface Session {
@@ -65,9 +66,12 @@ export const authOptions: NextAuthOptions = {
             console.error("Login Failed", await res.text());
             return null;
           }
-
+        
           const user = await res.json();
-  
+          if(!user){
+            toast.error('কোনো অ্যাকাউন্ট পাওয়া যায়নি')
+            return null;
+          }
           
           if (user.data.id) {
             return {

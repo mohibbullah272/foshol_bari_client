@@ -65,13 +65,16 @@ export function LoginForm({
   
       if (res?.ok ===false) {
         toast.error("আপনি ভুল পাসওয়ার্ড অথবা মোবাইল নম্বর লিখেছেন")
+      
       } else {
-        setLoading(false)
+       
         toast.success("লগইন সফল হয়েছে!")
         window.location.href = "/"
       }
     } catch (error) {
-      
+      toast.error('Something went Wrong')
+    }finally{
+      setLoading(false)
     }
 
   }
