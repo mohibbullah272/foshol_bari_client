@@ -23,7 +23,7 @@ const UserOverview = async () => {
   const user = await getServerSession(authOptions);
 
   const res = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/user/investor/dashboard-overview?userId=${2}`,
+    `${process.env.NEXT_PUBLIC_API_URL}/user/investor/dashboard-overview?userId=${user?.user.id}`,
     {
       cache: 'no-store',
       headers: {

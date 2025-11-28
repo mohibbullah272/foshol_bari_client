@@ -34,8 +34,8 @@ const paymentMethodSchema = z.object({
   }),
   number: z.string()
     .min(1, "নম্বর প্রয়োজন")
-    .regex(/^\d+$/, "শুধুমাত্র সংখ্যা allowed")
-    .refine(val => val.length >= 10 && val.length <= 15, "নম্বর ১০-১৫ digit হতে হবে"),
+    .regex(/^\d+$/, "শুধুমাত্র সংখ্যা allowed"),
+  
   accountName: z.string().min(1, "অ্যাকাউন্ট নাম প্রয়োজন"),
   instruction: z.string().min(10, "নির্দেশনা কমপক্ষে ১০ অক্ষর দীর্ঘ হতে হবে"),
 });

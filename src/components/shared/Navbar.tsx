@@ -22,6 +22,7 @@ import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { signOut, useSession } from "next-auth/react";
 import Image from "next/image";
+import { ModeToggle } from "@/helpers/theme-toggle";
 
 const Navbar5 = () => {
 const pathName=usePathname()
@@ -29,7 +30,7 @@ const user = useSession()
 
 
   return (
-    <section className="py-4 sticky top-0 z-50  bg-white/70 backdrop-blur-xl">
+    <section className="py-4 sticky top-0 z-50 bg-white/5 backdrop-blur-xl">
       <div className="max-w-7xl mx-auto px-2 ">
         <nav className="flex items-center justify-between">
           <Link
@@ -49,7 +50,7 @@ const user = useSession()
                   href="/"
                   className={cn(
                     "p-2 rounded-lg transition-colors hover:bg-gray-500/30 ",
-                    pathName === '/'? "bg-primary/20 backdrop-blur-md":"bg-white"
+                    pathName === '/'? "bg-primary/20 backdrop-blur-md":""
                     )}
                 >
                  Home
@@ -60,7 +61,7 @@ const user = useSession()
                   href="/about"
                   className={cn(
                     "p-2 rounded-lg transition-colors hover:bg-gray-500/30",
-                    pathName === '/about'? "bg-primary/20 backdrop-blur-md":"bg-white"
+                    pathName === '/about'? "bg-primary/20 backdrop-blur-md":"bg-white/5"
                     )}
                 >
                About Us
@@ -71,7 +72,7 @@ const user = useSession()
                   href="/projects"
                   className={cn(
                     "p-2 rounded-lg transition-colors hover:bg-gray-500/30",
-                    pathName === '/projects'? "bg-primary/20 backdrop-blur-md":"bg-white"
+                    pathName === '/projects'? "bg-primary/20 backdrop-blur-md":"bg-white/5"
                     )}
                 >
                   Projects
@@ -82,7 +83,7 @@ const user = useSession()
                   href="/Contact "
                   className={cn(
                     "p-2 rounded-lg transition-colors hover:bg-gray-500/30",
-                    pathName === '/contact'? "bg-primary/20 backdrop-blur-md":"bg-white"
+                    pathName === '/contact'? "bg-primary/20 backdrop-blur-md":"bg-white/5"
                     )}
                 >
              Contact Us
@@ -94,26 +95,29 @@ const user = useSession()
     href="/dashboard/investor/user-overview"
     className={cn(
       "p-2 rounded-lg transition-colors hover:bg-gray-500/30",
-      pathName === '/dashboard/investor/user-overview'? "bg-primary/20 backdrop-blur-md":"bg-white"
+      pathName === '/dashboard/investor/user-overview'? "bg-primary/20 backdrop-blur-md":"bg-white/5"
       )}
   >
 Dashboard
   </Link>
 </NavigationMenuItem>
  }
+
+
               {
   user.data?.user.role ==="ADMIN" && <NavigationMenuItem>
   <Link
     href="/dashboard/admin/overview"
     className={cn(
       "p-2 rounded-lg transition-colors hover:bg-gray-500/30",
-      pathName === '/dashboard/admin/overview'? "bg-primary/20 backdrop-blur-md":"bg-white"
+      pathName === '/dashboard/admin/overview'? "bg-primary/20 backdrop-blur-md":"bg-white/5"
       )}
   >
 Dashboard
   </Link>
 </NavigationMenuItem>
  }
+          <ModeToggle></ModeToggle>
             </NavigationMenuList>
           </NavigationMenu>
           <div className="hidden items-center gap-4 lg:flex">
@@ -164,7 +168,7 @@ Dashboard
                   href="/"
                   className={cn(
                     "p-2 rounded-lg transition-colors hover:bg-gray-500/30",
-                    pathName === '/'? "bg-primary/20 backdrop-blur-md":"bg-white"
+                    pathName === '/'? "bg-primary/20 backdrop-blur-md":"bg-white/5"
                     )}
                 >
                  Home
@@ -175,7 +179,7 @@ Dashboard
                   href="/about"
                   className={cn(
                     "p-2 rounded-lg transition-colors hover:bg-gray-500/30",
-                    pathName === '/about'? "bg-primary/20 backdrop-blur-md":"bg-white"
+                    pathName === '/about'? "bg-primary/20 backdrop-blur-md":"bg-white/5"
                     )}
                 >
                About Us
@@ -186,7 +190,7 @@ Dashboard
                   href="/projects"
                   className={cn(
                     "p-2 rounded-lg transition-colors hover:bg-gray-500/30",
-                    pathName === '/projects'? "bg-primary/20 backdrop-blur-md":"bg-white"
+                    pathName === '/projects'? "bg-primary/20 backdrop-blur-md":"bg-white/5"
                     )}
                 >
                   Projects
@@ -198,7 +202,7 @@ Dashboard
                   href="/Contact "
                   className={cn(
                     "p-2 rounded-lg transition-colors hover:bg-gray-500/30",
-                    pathName === '/contact'? "bg-primary/50 backdrop-blur-md":"bg-white"
+                    pathName === '/contact'? "bg-primary/50 backdrop-blur-md":"bg-white/5"
                     )}
                 >
              Contact Us
@@ -210,7 +214,7 @@ Dashboard
     href="/dashboard/investor/user-overview"
     className={cn(
       "p-2 rounded-lg transition-colors hover:bg-gray-500/30",
-      pathName === '/dashboard/investor/user-overview'? "bg-primary/20 backdrop-blur-md":"bg-white"
+      pathName === '/dashboard/investor/user-overview'? "bg-primary/20 backdrop-blur-md":"bg-white/5"
       )}
   >
 Dashboard
@@ -223,13 +227,14 @@ Dashboard
     href="/dashboard/admin/overview"
     className={cn(
       "p-2 rounded-lg transition-colors hover:bg-gray-500/30",
-      pathName === '/dashboard/admin/overview'? "bg-primary/20 backdrop-blur-md":"bg-white"
+      pathName === '/dashboard/admin/overview'? "bg-primary/20 backdrop-blur-md":"bg-white/5"
       )}
   >
 Dashboard
   </Link>
 </NavigationMenuItem>
  }
+ <ModeToggle></ModeToggle>
             </NavigationMenuList>
           </NavigationMenu>
                 <div className="mt-6 flex flex-col gap-4">

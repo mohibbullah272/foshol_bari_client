@@ -9,7 +9,7 @@ import 'aos/dist/aos.css';
 const AboutHero = () => {
   return (
     <section className="relative bg-primary/50 py-20 md:py-32 overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-to-br from-primary/50 via-primary to-primary/50" />
+      <div className="absolute inset-0 bg-gradient-to-bl from-primary/10 via-primary/50 to-primary/30 backdrop-blur-lg" />
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="max-w-4xl mx-auto text-center" data-aos="fade-up">
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-primary-foreground mb-6">
@@ -263,9 +263,7 @@ const CTASection = () => {
           <p className="text-primary-foreground/90 text-base md:text-lg lg:text-xl mb-6 md:mb-8 max-w-3xl mx-auto">
             ফসল বাড়ির সাথে যুক্ত হয়ে কৃষি খাতে বিনিয়োগ করুন এবং নিশ্চিত মুনাফা অর্জন করুন।
           </p>
-          <button className="bg-background text-foreground hover:bg-background/90 px-6 md:px-8 py-3 md:py-4 rounded-lg font-semibold text-base md:text-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
-            এখনই যুক্ত হন
-          </button>
+
         </div>
       </div>
     </section>
