@@ -29,7 +29,7 @@ const user = useSession()
 
 
   return (
-    <section className="py-4 sticky top-0 z-50 bg-white/80 backdrop-blur-3xl">
+    <section className="py-4 sticky top-0 z-50 bg-white/20 backdrop-blur-3xl">
       <div className="max-w-7xl mx-auto px-2 ">
         <nav className="flex items-center justify-between">
           <Link
