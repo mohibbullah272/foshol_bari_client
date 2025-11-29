@@ -2,6 +2,8 @@ import { authOptions } from "@/helpers/authOption";
 import ProjectDetails from "@/SubPage/ProjectDetails";
 import { getServerSession } from "next-auth";
 
+
+
 export async function generateMetadata({
     params,
   }: {

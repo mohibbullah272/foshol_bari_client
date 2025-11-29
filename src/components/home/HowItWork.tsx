@@ -5,6 +5,8 @@ import "aos/dist/aos.css";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 
+export const dynamic = "force-static";
+
 type TimelineEntry = {
 
   title: string;

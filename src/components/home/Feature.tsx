@@ -6,6 +6,8 @@ import { ArrowRight } from "lucide-react";
 import Image from "next/image";
 import feature1image from '../../../asset/feature1.jpg'
 import feature2image from '../../../asset/feature2.jpg'
+export const dynamic = "force-static";
+
 const Feature = () => {
     useEffect(() => {
         AOS.init({ duration: 1000 }); 

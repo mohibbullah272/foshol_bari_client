@@ -5,6 +5,14 @@ export const metadata: Metadata = {
   description: 'ফসল বাড়ি হলো বাংলাদেশের কৃষি খাতে বিনিয়োগের একটি বিশ্বস্ত প্ল্যাটফর্ম।',
 }
 
+export const dynamic = "force-static";
+
+
+
+
+
+
+
 const AboutPage = () => {
   return (
     <div>

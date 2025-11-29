@@ -6,6 +6,13 @@ import RecentProject from '@/components/project/RecentProject';
 import Testimonial from '@/components/home/Testimonial';
 import React from 'react';
 
+
+export const dynamic = "force-static";
+
+
+
+
+
 const HomePage = () => {
     return (
         <div>

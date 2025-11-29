@@ -21,7 +21,6 @@ import Logo from "../Logo";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { signOut, useSession } from "next-auth/react";
-import Image from "next/image";
 import { ModeToggle } from "@/helpers/theme-toggle";
 
 const Navbar5 = () => {
@@ -30,7 +29,7 @@ const user = useSession()
 
 
   return (
-    <section className="py-4 sticky top-0 z-50 bg-white/5 backdrop-blur-xl">
+    <section className="py-4 sticky top-0 z-50 bg-white/80 backdrop-blur-3xl">
       <div className="max-w-7xl mx-auto px-2 ">
         <nav className="flex items-center justify-between">
           <Link

@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { TextGenerateEffect } from "../ui/text-generate-effect";
 import Link from "next/link";
+export const dynamic = "force-static";
 
 const Hero = () => {
 

@@ -1,6 +1,9 @@
 import ProjectCard from "./ProjectCard";
 import { IProject } from '../../types/index';
 
+export const dynamic = "force-static";
+
+
 
 const RecentProject = async() => {
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/project/all?limit=3`,{
