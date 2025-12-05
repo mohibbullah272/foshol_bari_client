@@ -1,11 +1,13 @@
+import { getToken } from "next-auth/jwt";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-export function middleware(req: NextRequest) {
-  const token = req.cookies.get("next-auth.session-token") 
-    || req.cookies.get("__Secure-next-auth.session-token");
+export async  function middleware(req: NextRequest) {
+  const token = await getToken({ req, secret: process.env.AUTH_SECRET });
+
 
   // Not logged in → redirect
+
   if (!token) {
     return NextResponse.redirect(new URL("/signin", req.url));
   }
@@ -17,7 +19,8 @@ export function middleware(req: NextRequest) {
   const isInvestorRoute = pathname.startsWith("/dashboard/investor");
 
   // Extract the role from cookie header (decoded JWT)
-  const role = req.cookies.get("role")?.value || "guest";
+  const role = token.role ;
+
 
   // ❌ Admin trying to access investor route
   if (isAdminRoute && role !== "ADMIN") {
@@ -35,3 +38,5 @@ export function middleware(req: NextRequest) {
 export const config = {
   matcher: ["/dashboard/:path*"],
 };
+
+

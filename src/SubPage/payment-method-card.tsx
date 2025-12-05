@@ -4,7 +4,11 @@ import { PaymentMethod, PaymentMethods } from '@/types/payment';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Smartphone, CreditCard, Building, ArrowRight } from 'lucide-react';
+import {ArrowRight } from 'lucide-react';
+import getIcons from '@/components/ui/paymentMethodsIcons';
+
+
+
 
 interface PaymentMethodCardProps {
   paymentMethod: PaymentMethod | null;
@@ -17,44 +21,44 @@ const PaymentMethodCard = ({ paymentMethod, onSelect }: PaymentMethodCardProps) 
     const configs = {
       [PaymentMethods.BKASH]: { 
         label: 'বিকাশ', 
-        icon: Smartphone, 
-        color: 'bg-red-500',
+   
+        color: 'bg-pink-400',
         description: 'মোবাইল ফাইন্যান্স'
       },
       [PaymentMethods.NAGAD]: { 
         label: 'নগদ', 
-        icon: Smartphone, 
-        color: 'bg-purple-500',
+   
+        color: 'bg-red-400',
         description: 'মোবাইল ফাইন্যান্স'
       },
       [PaymentMethods.ROCKET]: { 
         label: 'রকেট', 
-        icon: Smartphone, 
-        color: 'bg-blue-500',
+
+        color: 'bg-purple-500',
         description: 'মোবাইল ফাইন্যান্স'
       },
       [PaymentMethods.UPAY]: { 
         label: 'উপায়', 
-        icon: Smartphone, 
-        color: 'bg-green-500',
+    
+        color: 'bg-yellow-400',
         description: 'মোবাইল ফাইন্যান্স'
       },
       [PaymentMethods.BANK]: { 
         label: 'ব্যাংক', 
-        icon: Building, 
+ 
         color: 'bg-gray-500',
         description: 'ব্যাংক ট্রান্সফার'
       },
       [PaymentMethods.UCB]: { 
         label: 'ইউসিবি', 
-        icon: CreditCard, 
-        color: 'bg-orange-500',
+  
+        color: 'bg-slate-400',
         description: 'ব্যাংকিং সার্ভিস'
       },
     };
     return configs[method] || { 
       label: 'অজানা', 
-      icon: CreditCard, 
+   
       color: 'bg-gray-500',
       description: 'পেমেন্ট মেথড'
     };
@@ -66,7 +70,7 @@ const PaymentMethodCard = ({ paymentMethod, onSelect }: PaymentMethodCardProps) 
   }
 
   const config = getMethodConfig(paymentMethod.methodName);
-  const IconComponent = config.icon;
+
 
   return (
     <Card className="hover:shadow-lg transition-all duration-300 cursor-pointer border-2 border-transparent hover:border-primary">
@@ -74,7 +78,9 @@ const PaymentMethodCard = ({ paymentMethod, onSelect }: PaymentMethodCardProps) 
         <div className={`${config.color} text-white p-4 rounded-t-lg`}>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <IconComponent className="h-6 w-6" />
+        
+{getIcons(config.label)}
+
               <div>
                 <h3 className="font-semibold text-lg">{config.label}</h3>
                 <p className="text-white/80 text-sm">{config.description}</p>

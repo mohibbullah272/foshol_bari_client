@@ -38,6 +38,7 @@ const paymentMethodSchema = z.object({
   
   accountName: z.string().min(1, "অ্যাকাউন্ট নাম প্রয়োজন"),
   instruction: z.string().min(10, "নির্দেশনা কমপক্ষে ১০ অক্ষর দীর্ঘ হতে হবে"),
+
 });
 
 type PaymentMethodFormValues = z.infer<typeof paymentMethodSchema>;
@@ -58,6 +59,7 @@ export const PaymentMethodForm = ({ onSuccess }: PaymentMethodFormProps) => {
       number: '',
       accountName: '',
       instruction: '',
+  
     },
   });
 
